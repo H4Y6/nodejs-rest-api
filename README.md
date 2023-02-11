@@ -1,153 +1,83 @@
 # nodejs-rest-api-f
 
+# DZ-2
+
+Подивися пояснююче відео як це зробити та здавати ДЗ правильно: [![Title](./js.png)](https://www.youtube.com/watch?v=wabSW_sz_cM " пояснення")
+Написати REST API для роботи з колекцією контактів. Для роботи з REST API використовуй [Postman] (https://www.getpostman.com/).
+Прочитай уважно readme в клонованому темплейті, там описаний механізм здачі домашніх завдань. Та починай виконувати ДЗ
+
 ## Крок 1
 
-- Ініціалізується npm в проекті
-- В корені проекту створи файл `index.js`
-- Постав пакет [nodemon](https://www.npmjs.com/package/nodemon) як залежність [nodemon](https://www.npmjs.com/package/nodemon) як залежність розробки (devDependencies)
-- В файлі `package.json` додай "скрипти" для запуску `index.js`
-  - Скрипт `start` який запускає `index.js` за допомогою `node`
-  - Скрипт `dev` який запускає `index.js` за допомогою `nodemon`
+Створи гілку `hw02-express` з гілки master.
+
+Встанови модулі командою
+
+```bash
+npm i
+```
+
+Такі модулі є в проекті:
+
+- [express](https://www.npmjs.com/package/express)
+- [morgan](https://www.npmjs.com/package/morgan)
+- [cors](https://www.npmjs.com/package/cors)
 
 ## Крок 2
 
-У корені проекту створи папку `db`. Для зберігання контактів завантаж і використовуй файл [contacts.json](./contacts.json), поклавши його в папку `db`.
+У `app.js` – веб сервер на `express` і прошарки `morgan` та `cors`. Почни налаштовувати раутінг для роботи з колекцією контактів.
 
-У корені проекту створи файл `contacts.js`.
+REST API повинен підтримувати такі раути.
 
-- Зроби імпорт модулів `fs` і `path` для роботи з файловою системою
-- Створи змінну `contactsPath` і запиши в неї шлях до файлі `contacts.json`. Для складання шляху використовуй методи модуля `path`.
-- Додай функції для роботи з колекцією контактів. У функціях використовуй модуль `fs` та його методи `readFile()` і `writeFile()`
-- Зроби експорт створених функцій через `module.exports`
+### @ GET /api/contacts
 
-```js
-// contacts.js
+- нічого не отримує
+- викликає функцію `listContacts` для роботи з json-файлом `contacts.json`
+- повертає масив всіх контактів в json-форматі зі статусом `200`
 
-/*
- * Розкоментуйте і запишить значення
- * const contactsPath = ;
- */
+### @ GET /api/contacts/:id
 
-// TODO: задокументувати кожну функцію
-function listContacts() {
-  // ...твій код
-}
+- Не отримує `body`
+- Отримує параметр `id`
+- викликає функцію `getById` для роботи з json-файлом `contacts.json`
+- якщо такий `id` є, повертає об'єкт контакту в json-форматі зі статусом `200`
+- якщо такого `id` немає, повертає json з ключем `"message": "Not found"` і статусом `404`
 
-function getContactById(contactId) {
-  // ...твій код
-}
+### @ POST /api/contacts
 
-function removeContact(contactId) {
-  // ...твій код
-}
+- Отримує `body` в форматі `{name, email, phone}` (усі поля обов'язкові)
+- Якщо в `body` немає якихось обов'язкових полів, повертає json з ключем `{"message": "missing required name field"}` і статусом `400`
+- Якщо з `body` все добре, додає унікальний ідентифікатор в об'єкт контакту
+- Викликає функцію `addContact(body)` для збереження контакту в файлі `contacts.json`
+- За результатом роботи функції повертає об'єкт з доданим `id` `{id, name, email, phone}` і статусом `201`
 
-function addContact(name, email, phone) {
-  // ...твій код
-}
-```
+### @ DELETE /api/contacts/:id
+
+- Не отримує `body`
+- Отримує параметр `id`
+- Викликає функцію `removeContact` для роботи з json-файлом `contacts.json`
+- якщо такий `id` є, повертає json формату `{"message": "contact deleted"}` і статусом `200`
+- якщо такого `id` немає, повертає json з ключем `"message": "Not found"` і статусом `404`
+
+### @ PUT /api/contacts/:id
+
+- Отримує параметр `id`
+- Отримує `body` в json-форматі з оновленням будь-яких полів `name, email и phone`
+- Якщо `body` немає, повертає json з ключем `{"message": "missing fields"}` і статусом `400`
+- Якщо з `body` все добре, викликає функцію `updateContact(contactId, body)`. (Напиши її) для поновлення контакту в файлі `contacts.json`
+- За результатом роботи функції повертає оновлений об'єкт контакту і статусом `200`. В іншому випадку, повертає json з ключем `"message": "Not found"` і статусом `404`
 
 ## Крок 3
 
-Зроби імпорт модуля `contacts.js` в файлі `index.js` та перевір працездатність функцій для роботи з контактами.
+Для маршрутів, що приймають дані (`POST` та ` PUT`), продумайте перевірку (валідацію) отриманих даних. Для валідації прийнятих даних використовуйте пакет [joi](https://github.com/sideway/joi)
 
-## Крок 4
+## Критерії прийому дз # 2-6
 
-У файлі `index.js` імпортується пакет `yargs` для зручного парсу аргументів командного рядка. Використовуй готову функцію `invokeAction()` яка отримує тип виконуваної дії і необхідні аргументи. Функція викликає відповідний метод з файлу `contacts.js` передаючи йому необхідні аргументи.
-
-```js
-// index.js
-const argv = require("yargs").argv;
-
-// TODO: рефакторить
-function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      // ...
-      break;
-
-    case "get":
-      // ... id
-      break;
-
-    case "add":
-      // ... name email phone
-      break;
-
-    case "remove":
-      // ... id
-      break;
-
-    default:
-      console.warn("\x1B[31m Unknown action type!");
-  }
-}
-
-invokeAction(argv);
-```
-
-Так само, ви можете використовувати модуль [commander] (https://www.npmjs.com/package/commander) для парсинга аргументів командного рядка. Це більш популярна альтернатива модуля `yargs`
-
-```js
-const { Command } = require("commander");
-const program = new Command();
-program
-  .option("-a, --action <type>", "choose action")
-  .option("-i, --id <type>", "user id")
-  .option("-n, --name <type>", "user name")
-  .option("-e, --email <type>", "user email")
-  .option("-p, --phone <type>", "user phone");
-
-program.parse(process.argv);
-
-const argv = program.opts();
-
-// TODO: рефакторить
-function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      // ...
-      break;
-
-    case "get":
-      // ... id
-      break;
-
-    case "add":
-      // ... name email phone
-      break;
-
-    case "remove":
-      // ... id
-      break;
-
-    default:
-      console.warn("\x1B[31m Unknown action type!");
-  }
-}
-
-invokeAction(argv);
-```
-
-## Крок 5
-
-Запусти команди в терміналі і зроби окремий скріншот результату виконання кожної команди.
-
-```shell
-# Отримуємо і виводимо весь список контактів у вигляді таблиці (console.table)
-node index.js --action="list"
-
-# Отримуємо контакт по id
-node index.js --action="get" --id=5
-
-# Додаємо контакт
-node index.js --action="add" --name="Mango" --email="mango@gmail.com" --phone="322-22-22"
-
-# Видаляємо контакт
-node index.js --action="remove" --id 3
-```
-
-## Критерії
-
-- Створено репозиторій з домашнім завданням &mdash; CLI додаток
+- Створено репозиторій з домашнім завданням &mdash; REST API додаток
+- При створенні репозиторія використаний [бойлерплейт](https://github.com/goitacademy/nodejs-homework-template)
+- Пулл-реквест (PR) з відповідним дз відправлений менторові в [schoology](https://app.schoology.com/login) на перевірку (посилання на PR)
+- Код відповідає технічному завданню проекта
+- При виконанні коду не виникає необроблених помилок
 - Назва змінних, властивостей і методів починається з малої літери і записуються в нотації CamelCase. Використовуються англійські іменники
 - Назва функції або методу містить дієслово
+- У коді немає закоментуваних ділянок коду
+- Проект коректно працює з актуальною LTS-версією Node
