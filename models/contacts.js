@@ -40,7 +40,16 @@ const updateContact = async (contactId, name, email, phone) => {
   return contacts[i];
 };
 
-const removeContact = async (contactId) => {};
+const removeContact = async (contactId) => {
+  const contacts = await listContacts();
+  const i = contacts.findIndex((c) => c.id === contactId);
+  if (i === -1) {
+    return null;
+  }
+  const [removeContact] = contacts.splice(i, 1);
+  await updateContacts(contacts);
+  return removeContact;
+};
 
 module.exports = {
   listContacts,

@@ -59,12 +59,21 @@ router.put("/:id", async (req, res, next) => {
     const { name, email, phone } = req.body;
     const result = await contacts.updateContact(id, name, email, phone);
     if (!result) {
-      return next(error);
+      return res.status(404).json({ message: "Not found" });
     }
     res.status(201).json(result);
   } catch (error) {
     next(error);
   }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  const { id } = req.params;
+  const result = await contacts.removeContact(id);
+  if (!result) {
+    return res.status(404).json({ message: "Not found" });
+  }
+  res.json("Contact`s deleted");
 });
 
 module.exports = router;
