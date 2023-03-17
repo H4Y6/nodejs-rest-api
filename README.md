@@ -1,4 +1,4 @@
-# nodejs-rest-api-f
+# nodejs-rest-api
 
 # DZ-2
 
