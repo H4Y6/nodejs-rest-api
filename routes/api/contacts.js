@@ -1,7 +1,14 @@
 const express = require("express");
+const Joi = require("joi");
 const contacts = require("../../models/contacts");
 
 const router = express.Router();
+
+const contactsAddSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+});
 
 router.get("/", async (req, res, next) => {
   try {
@@ -22,6 +29,23 @@ router.get("/:id", async (req, res, next) => {
     return res.json(result);
   } catch (error) {
     res.status(500).json("Server Error");
+  }
+});
+
+router.post("/", async (req, res, next) => {
+  try {
+    const { error } = contactsAddSchema.validate(req.body);
+    if (error) {
+      // const error = new Error("Server error");
+      // throw error;
+      next(error);
+      return;
+    }
+    const { name, email, phone } = req.body;
+    const result = await contacts.addContact(name, email, phone);
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
   }
 });
 
