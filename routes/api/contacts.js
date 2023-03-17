@@ -49,4 +49,22 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.put("/:id", async (req, res, next) => {
+  try {
+    const { error } = contactsAddSchema.validate(req.body);
+    if (error) {
+      next(error);
+    }
+    const { id } = req.params;
+    const { name, email, phone } = req.body;
+    const result = await contacts.updateContact(id, name, email, phone);
+    if (!result) {
+      return next(error);
+    }
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
