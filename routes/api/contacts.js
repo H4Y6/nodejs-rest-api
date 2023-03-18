@@ -1,10 +1,9 @@
 const express = require("express");
 const Joi = require("joi");
 const contacts = require("../../models/contacts");
+const { createError } = require("../../helpers");
 
 const router = express.Router();
-
-// const createError = () => {};
 
 const contactsAddSchema = Joi.object({
   name: Joi.string().required(),
@@ -28,9 +27,10 @@ router.get("/:id", async (req, res, next) => {
     const result = await contacts.getContactById(id);
     if (!result) {
       // return res.status(404).json({ message: "Not found" });
-      const error = new Error("Not found");
-      error.status = 404;
-      throw error;
+      // const error = new Error("Not found");
+      // error.status = 404;
+      // throw error;
+      throw createError(404);
     }
     res.json(result);
   } catch (error) {
@@ -48,8 +48,8 @@ router.post("/", async (req, res, next) => {
       next(error);
       return;
     }
-    const { name, email, phone } = req.body;
-    const result = await contacts.addContact(name, email, phone);
+    // const { name, email, phone } = req.body;
+    const result = await contacts.addContact(req.body);
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -60,11 +60,13 @@ router.put("/:id", async (req, res, next) => {
   try {
     const { error } = contactsAddSchema.validate(req.body);
     if (error) {
-      next(error);
+      const err = new Error(error.message);
+      err.status = 400;
+      throw err;
     }
     const { id } = req.params;
-    const { name, email, phone } = req.body;
-    const result = await contacts.updateContact(id, name, email, phone);
+    // const { name, email, phone } = req.body;
+    const result = await contacts.updateContact(id, req.body);
     if (!result) {
       return res.status(404).json({ message: "Not found" });
     }
