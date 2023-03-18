@@ -27,7 +27,10 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const result = await contacts.getContactById(id);
     if (!result) {
-      return res.status(404).json({ message: "Not found" });
+      // return res.status(404).json({ message: "Not found" });
+      const error = new Error("Not found");
+      error.status = 404;
+      throw error;
     }
     res.json(result);
   } catch (error) {
