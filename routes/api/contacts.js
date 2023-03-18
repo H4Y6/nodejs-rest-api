@@ -43,12 +43,10 @@ router.post("/", async (req, res, next) => {
   try {
     const { error } = contactsAddSchema.validate(req.body);
     if (error) {
-      // const error = new Error("Server error");
-      // throw error;
-      next(error);
-      return;
+      // const err = new Error(error.message);
+      // throw err;
+      throw createError(400, error.message);
     }
-    // const { name, email, phone } = req.body;
     const result = await contacts.addContact(req.body);
     res.status(201).json(result);
   } catch (error) {
@@ -60,15 +58,12 @@ router.put("/:id", async (req, res, next) => {
   try {
     const { error } = contactsAddSchema.validate(req.body);
     if (error) {
-      const err = new Error(error.message);
-      err.status = 400;
-      throw err;
+      throw createError(400, error.message);
     }
     const { id } = req.params;
-    // const { name, email, phone } = req.body;
     const result = await contacts.updateContact(id, req.body);
     if (!result) {
-      return res.status(404).json({ message: "Not found" });
+      throw createError(404);
     }
     res.status(201).json(result);
   } catch (error) {
@@ -81,7 +76,7 @@ router.delete("/:id", async (req, res, next) => {
     const { id } = req.params;
     const result = await contacts.removeContact(id);
     if (!result) {
-      return res.status(404).json({ message: "Not found" });
+      throw createError(404);
     }
     res.json("Contact`s deleted");
   } catch (error) {

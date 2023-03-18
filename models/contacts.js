@@ -29,7 +29,7 @@ const addContact = async ({ name, email, phone }) => {
   return newContact;
 };
 
-const updateContact = async (contactId, name, email, phone) => {
+const updateContact = async (contactId, { name, email, phone }) => {
   const contacts = await listContacts();
   const i = contacts.findIndex((c) => c.id === contactId);
   if (i === -1) {
