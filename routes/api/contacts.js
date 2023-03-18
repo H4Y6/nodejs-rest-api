@@ -34,7 +34,6 @@ router.get("/:id", async (req, res, next) => {
     }
     res.json(result);
   } catch (error) {
-    // res.status(500).json("Server Error");
     next(error);
   }
 });
