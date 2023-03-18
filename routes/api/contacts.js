@@ -64,7 +64,7 @@ router.put("/:id", async (req, res, next) => {
     if (!result) {
       throw createError(404);
     }
-    res.status(201).json(result);
+    res.json(result);
   } catch (error) {
     next(error);
   }
