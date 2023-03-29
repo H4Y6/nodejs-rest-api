@@ -1,4 +1,18 @@
 const { Schema, model } = require("mongoose");
+const Joi = require("joi");
+
+const addSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string()
+    .pattern(/\w+@\w+\.\w+/)
+    .required(),
+  phone: Joi.string().required(),
+  favorite: Joi.boolean(),
+});
+
+const updateStatusSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
 
 const contactSchema = new Schema(
   {
@@ -10,6 +24,8 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
+const schemas = { addSchema, updateStatusSchema };
+
 const Contact = model("contact", contactSchema);
 
-module.exports = Contact;
+module.exports = { Contact, schemas };

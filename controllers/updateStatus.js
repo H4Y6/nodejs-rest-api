@@ -1,14 +1,9 @@
-const { Contact } = require("../models");
+const { Contact, schemas } = require("../models");
 const { createError } = require("../helpers");
-
-const Joi = require("joi");
-const contactsUpdateStatusSchema = Joi.object({
-  favorite: Joi.boolean().required(),
-});
 
 const updateStatus = async (req, res, next) => {
   try {
-    const { error } = contactsUpdateStatusSchema.validate(req.body);
+    const { error } = schemas.updateStatusSchema.validate(req.body);
     if (error) {
       throw createError(400, error.message);
     }
