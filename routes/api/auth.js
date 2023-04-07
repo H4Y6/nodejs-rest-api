@@ -8,7 +8,4 @@ const router = express.Router();
 
 router.post("/register", ctrlWrapper(ctrl.register));
 
-const router = express.Router();
-
-
 module.exports = router;
