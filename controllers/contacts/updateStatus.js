@@ -1,7 +1,7 @@
 const { Contact, schemas } = require("../../models/contacts");
 const { createError } = require("../../helpers");
 
-const updateStatus = async (req, res, next) => {
+const updateStatus = async (req, res) => {
   const { error } = schemas.updateStatusSchema.validate(req.body);
   if (error) {
     throw createError(400, error.message);
