@@ -1,7 +1,7 @@
 const { Contact } = require("../../models/contacts");
 const { createError } = require("../../helpers");
 
-const getById = async (req, res, next) => {
+const getById = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findById(id, " -createdAt -updatedAt ");
   if (!result) {
