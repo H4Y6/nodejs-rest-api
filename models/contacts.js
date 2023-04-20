@@ -1,6 +1,17 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
 
+const contactSchema = new Schema(
+  {
+    name: { type: String, required: [true, "Set name for contact"] },
+    email: { type: String, match: /\w+@\w+\.\w+/, required: true },
+    phone: { type: String, required: true },
+    favorite: { type: Boolean, default: false },
+    owner: { type: Schema.Types.ObjectId, ref: "user" },
+  },
+  { versionKey: false, timestamps: true }
+);
+
 const addSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string()
@@ -13,16 +24,6 @@ const addSchema = Joi.object({
 const updateStatusSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
-
-const contactSchema = new Schema(
-  {
-    name: { type: String, required: [true, "Set name for contact"] },
-    email: { type: String, match: /\w+@\w+\.\w+/, required: true },
-    phone: { type: String, required: true },
-    favorite: { type: Boolean, default: false },
-  },
-  { versionKey: false, timestamps: true }
-);
 
 const schemas = { addSchema, updateStatusSchema };
 
