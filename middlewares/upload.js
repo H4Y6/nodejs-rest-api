@@ -5,7 +5,7 @@ const { basedir } = global;
 const tmpsDir = path.join(basedir, "tmp");
 
 const storage = multer.diskStorage({
-  tmpDir: tmpsDir,
+  destination: tmpsDir,
   filename: (req, file, cb) => {
     cb(null, file.originalname);
   },
