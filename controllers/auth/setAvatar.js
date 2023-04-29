@@ -1,9 +1,9 @@
 const fs = require("fs/promises");
 const path = require("path");
-const Jimp = require("jimp");
 
 const { basedir } = global;
 const { User } = require(`${basedir}/models/users`);
+const { manipulateImg } = require(`${basedir}/middlewares`);
 
 const avatarsDir = path.join(basedir, "public", "avatars");
 
@@ -11,12 +11,7 @@ const setAvatar = async (req, res) => {
   try {
     const { _id } = req.user;
     const { path: tmpPath, originalname } = req.file;
-
-    const avatar = await Jimp.read(tmpPath);
-    avatar.resize(250, 250); // resize
-    avatar.quality(77);
-    avatar.write(tmpPath);
-
+    await manipulateImg(tmpPath);
     const [extension] = originalname.split(".").reverse();
     const newName = `${_id}.${extension}`;
     const uploadPath = path.join(avatarsDir, newName);
