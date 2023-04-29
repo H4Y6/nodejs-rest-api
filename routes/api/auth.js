@@ -1,5 +1,4 @@
 const express = require("express");
-
 const { basedir } = global;
 const { ctrlWrapper } = require(`${basedir}/helpers`);
 const ctrl = require(`${basedir}/controllers/auth`);
