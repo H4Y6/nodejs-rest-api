@@ -6,6 +6,7 @@ async function manipulateImg(tmpPath) {
     avatar
       .resize(250, 250) // resize
       .quality(77)
+      .greyscale()
       .write(tmpPath);
   } catch (error) {
     console.log(error);

@@ -3,7 +3,7 @@ const path = require("path");
 
 const { basedir } = global;
 const { User } = require(`${basedir}/models/users`);
-const { manipulateImg } = require(`${basedir}/middlewares`);
+const { manipulateImg } = require(`${basedir}/helpers`);
 
 const avatarsDir = path.join(basedir, "public", "avatars");
 
